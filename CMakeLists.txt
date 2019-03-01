@@ -3,6 +3,12 @@ cmake_minimum_required (VERSION 3.6)
 #Add sources to the project
 set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(src)
+
+if (EXISTS ${CMAKE_SOURCE_DIR}/3rdparty)
+  set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
+  add_subdirectory(3rdparty)
+endif()
+
 file(GLOB LDSCRIPT_SOURCES "${CMAKE_SOURCE_DIR}/ldscripts/*")
 set(SHARED_SOURCELIST ${SOURCES} ${LDSCRIPT_SOURCES} ${CMAKE_SOURCE_DIR}/include/imxrt_arch.h ${CMAKE_SOURCE_DIR}/README.md)
 
