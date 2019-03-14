@@ -93,7 +93,7 @@ void SystemInit (void) {
   SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));    /* set CP10, CP11 Full Access */
 #endif /* ((__FPU_PRESENT == 1) && (__FPU_USED == 1)) */
 
-#if defined(__MCUXPRESSO)
+#if defined(__MCUXPRESSO) && !defined(__StratifyOS__)
     extern uint32_t g_pfnVectors[];  // Vector table defined in startup code
     SCB->VTOR = (uint32_t)g_pfnVectors;
 #endif
