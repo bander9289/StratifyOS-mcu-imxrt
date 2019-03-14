@@ -5,12 +5,16 @@ set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(src)
 
 if (EXISTS ${CMAKE_SOURCE_DIR}/3rdparty)
-  set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
+  #NOTE: '3rdparty' should place source list into SOURCES_3RDPARTY, include directories into
+  #      INCLUDES_3RDPARTY, and dependencies into LIBRARIES_3RDPARTY
+  set(SOURCES_PREFIX ${CMAKE_SOURCE_DIR}/3rdparty)
   add_subdirectory(3rdparty)
+  include_directories(${INCLUDES_3RDPARTY})
+  link_libraries(${LIBRARIES_3RDPARTY})
 endif()
 
 file(GLOB LDSCRIPT_SOURCES "${CMAKE_SOURCE_DIR}/ldscripts/*")
-set(SHARED_SOURCELIST ${SOURCES} ${LDSCRIPT_SOURCES} ${CMAKE_SOURCE_DIR}/include/imxrt_arch.h ${CMAKE_SOURCE_DIR}/README.md)
+set(SHARED_SOURCELIST ${SOURCES} ${SOURCES_3RDPARTY} ${LDSCRIPT_SOURCES} ${CMAKE_SOURCE_DIR}/include/imxrt_arch.h ${CMAKE_SOURCE_DIR}/README.md)
 
 if( ${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin" )
   set(SOS_TOOLCHAIN_CMAKE_PATH /Applications/StratifyLabs-SDK/Tools/gcc/arm-none-eabi/cmake)
