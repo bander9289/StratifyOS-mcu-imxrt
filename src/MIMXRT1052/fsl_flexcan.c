@@ -1820,6 +1820,7 @@ void FLEXCAN_TransferHandleIRQ(CAN_Type *base, flexcan_handle_t *handle)
 
     status_t status = kStatus_FLEXCAN_UnHandled;
     uint32_t result;
+    bool bDisableRxInt = true;
 
     /* Store Current FlexCAN Module Error and Status. */
     result = base->ESR1;
@@ -1936,17 +1937,23 @@ void FLEXCAN_TransferHandleIRQ(CAN_Type *base, flexcan_handle_t *handle)
                         break;
 
                     default:
+#if defined(__StratifyOS__)
+                        // allow unsolicited/async reception
+                        bDisableRxInt = false;
+#endif
                         status = kStatus_FLEXCAN_UnHandled;
                         break;
                 }
             }
 
+          if (bDisableRxInt) {
             /* Clear resolved Message Buffer IRQ. */
 #if (defined(FSL_FEATURE_FLEXCAN_HAS_EXTENDED_FLAG_REGISTER)) && (FSL_FEATURE_FLEXCAN_HAS_EXTENDED_FLAG_REGISTER > 0)
             FLEXCAN_ClearMbStatusFlags(base, (uint64_t)1 << result);
 #else
             FLEXCAN_ClearMbStatusFlags(base, 1 << result);
 #endif
+          }
         }
 
         /* Calling Callback Function if has one. */
