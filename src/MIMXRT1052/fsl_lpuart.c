@@ -688,8 +688,13 @@ void LPUART_WriteBlocking(LPUART_Type *base, const uint8_t *data, size_t length)
     ensure all data in the data buffer are sent into the transmit shift buffer. */
     while (length--)
     {
+        int loopcnt = 5000;
         while (!(base->STAT & LPUART_STAT_TDRE_MASK))
         {
+          //NOTE: this has potential to stall the system, so here's a reasonable timeout
+          if (loopcnt-- < 0) {
+            return; // drop byte, but return to OS
+          }
         }
         base->DATA = *(data++);
     }
