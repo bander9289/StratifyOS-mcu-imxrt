@@ -202,6 +202,14 @@ int mcu_uart_setattr(const devfs_handle_t * handle, void * ctl){
 				 CORE_PERIPH_UART, port, 0, 0, 0) < 0 ){
 			return SYSFS_SET_RETURN(EINVAL);
 		}
+#else
+    // support line control in the meantime
+    if (local->attr->pin_assignment.rts.pin != 0xFF) {
+      uart_config.enableRxRTS = true;
+    }
+    if (local->attr->pin_assignment.cts.pin != 0xFF) {
+      uart_config.enableTxCTS = true;
+    }
 #endif
 
 		int init_result;
